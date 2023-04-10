@@ -1,2 +1,5 @@
 # IMDB_top_movies_analysis
-Uma análise sobre alguns gêneros apresentados no rank dos 250 melhores filmes do IMDB
+Uma análise sobre alguns gêneros apresentados no rank dos 250 melhores filmes do IMDB.
+Esta análise consiste em entender um pouco das preferências dos usuários do IMDB. Os dados estão disponíveis em "https://www.kaggle.com/datasets/rajugc/imdb-top-250-movies-dataset", sendo a fonte de extração o própio site do IMDB. Os dados representam os 250 filmes mais bem avaliados da plataforma.
+Esta análise foi realizada para práticar os conhecidos adquiridos durante o curso "Certificado Profissional de Data Analytics do Google". O motivo da escolha foi pessoal, sou fã de cinema e a plataforma sempre influencia minha decisão na hora de assistir um filme - busco saber a nota e comentários no site, para saber se aquele filme valerá a pena ou será uma grande decepção.
+A análise consiste em entender quais são os 2 gêneros mais bem avaliados da plataforma e, quais são os subgêneros, dentro destes primários, que mais atraem os usuários. Por fim, buscando uma tendência, olhamos para o ano de lançamento destes filmes, a fim de entender se existem alguma relação com o ano de lançamento e a preferância do público. 
