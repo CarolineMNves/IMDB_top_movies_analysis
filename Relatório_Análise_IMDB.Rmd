@@ -1,0 +1,163 @@
+---
+title: "Uma análise dos 250 melhores filmes do IMDB"
+author: "Caroline Neves"
+date: "2023-04-09"
+output: html_document
+---
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(janitor)
+library(lubridate)
+library(readr)
+library(readr)
+imdb_top_movies <- read_csv("C:/Users/Caroline/Downloads/imdb_analise - IMDB Top 250 Movies.csv")
+```
+
+
+## Os favoritos da crítica 
+
+  O IMDB é uma das maiores base de dados online de informação sobre cinema TV, música e games. Seus usuários podem avaliar os conteúdos com os quais interagiu, tendo a possibilidade de deixar cometários à respeito de sua avaliação.
+  O conjunto de dados, disponível na plataforma Kaggle, foram extraídos do site do IMDB, no ano de 2021.
+  No gráfico abaixo, podemos observar os gêneros que mais aparecem no top 250 do IMDB.
+
+```{r}
+genres_count <- imdb_top_movies %>%
+  select(rank, name, year, genres_1) %>%
+  group_by(genres_1) %>%
+  summarize(n = n()) %>%
+  arrange(desc(n))
+View(genres_count)
+
+ggplot(genres_count, aes(x = genres_1, y = n, fill = genres_1)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top movie genres on IMDB",
+       subtitle = "Based on the platform's top 250 movies",
+       x = "Genre",
+       y = "Number of movies") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+##Emoção e adrenalina!
+  A primeira instância, podemos perceber que os filmes de ação e drama são os preferidos e mais bem avaliados, entre os usuários da plataforma. No gráfico abaixo, podemos ver a ocorrência dos filmes destes gêneros de forma mais clara. Dentre os 250 filmes, mais de 60 são filmes de drama e mais de 40 são filmes de ação!
+
+
+```{r}
+drama_action_films <- imdb_top_movies %>%
+  filter(genres_1 == "Drama" | genres_1 == "Action")
+
+#Verificar a quantidade de filmes selecionados
+nrow(drama_action_films)
+
+#contagem de filmes por gênero
+genre_count <- drama_action_films %>%
+  group_by(genres_1) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
+#plotando gráfico de barras
+ggplot(genre_count, aes(x = genres_1, y = count, fill = genres_1)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Occurrence of Action and Drama films", subtitle= "Genres and Subgenres",
+       x = "Genre",
+       y = "Number of movies") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_discrete(name = "Genre")
+```
+
+
+##Muita ação e aventura, com uma pitada de risadas
+  Uma outra forma de conhecer esses telespectadores, é dando uma olhada nos subgêneros preferidos. No gráfico abaixo, podemos perceber que a galera curte muitão ação com aventura, mas quando o assunto é ação e ficção-científica, parece que a indústria deixa um pouco a desejar.
+
+
+```{r}
+imdb_top_movies %>% dplyr::count(subgenres_1=="Action_Adventure") 
+imdb_top_movies %>% dplyr::count(subgenres_1=="Action_Biography") 
+imdb_top_movies %>% dplyr::count(subgenres_1=="Action_Comedy") 
+imdb_top_movies %>% dplyr::count(subgenres_1=="Action_Crime") 
+imdb_top_movies %>% dplyr::count(subgenres_1=="Action_Drama") 
+imdb_top_movies %>% dplyr::count(subgenres_1=="Action_Sci-fi") 
+imdb_top_movies %>% dplyr::count(subgenres_1=="Action_Thriller") 
+
+#criando um dataframe com os dados obtidos para criação do gráfico
+action_films <- c("Action Adventure", "Action Biography","Action Comedy","Action Crime","Action Drama","Action Scifi","Action Thriller")
+number_of_films <- c(2,3,2,5,12,0,1)
+action_subgenres <- data.frame(action_films <- c("Action Adventure", "Action Biography",
+"Action Comedy","Action Crime","Action Drama","Action Scifi","Action Thriller"), number_of_films <- c(2,3,2,5,12,0,1))
+View(action_subgenres)
+
+colors <- c("red", "blue", "green", "purple", "orange", "gray", "black")
+
+#plotando o gráfico
+ggplot(data = action_subgenres) +
+  geom_point(mapping = aes(x = action_films, y = number_of_films, color = action_films), size = 9) +
+  scale_color_manual(values = colors) +
+  labs(title = "Most popular subgenres in Action Movies",
+       xlab = "Subgenre",
+       ylab = "Number of films")
+```
+
+
+##Drama, romance e mistérios...
+  Parece a receita perfeita para um dia frio e chuvoso, não é mesmo? Acho que os usuários concordam conosco, vejamos no gráfico abaixo quais são os subgêneros de drama que mais apareceram no rank.
+
+
+```{r}
+#contando o subgeneros de drama
+drama_subgenres <- imdb_top_movies %>%
+  filter(grepl("Drama", genres_1)) %>%
+  summarise(total_movies = n())
+View(drama_subgenres)
+
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Family") #4
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Fantasy") #2
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Film-Noir") #2
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Horror") #1
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Music") #1
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Mystery") #10
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Romance") #11
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Sci-Fi") #1
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Sport") #2
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Thriller") #5
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_War") #8
+imdb_top_movies %>% dplyr::count(subgenres_1=="Drama_Western") #2
+
+#criando um dataframe com os dados obtidos para criação do gráfico
+drama_subgenres <- data.frame(subgenre = c("Drama Family", "Drama Fantasy",
+                                           "Drama Film Noir", "Drama Music",
+                                           "Drama Mystery", "Drama Romance", "Drama Sci-fi", "Drama Sport",
+                                           "Drama Thriller", "Drama War", "Drama Western"),
+number_of_films = c(4, 2, 2, 1, 1, 10, 11, 1, 2, 5, 8))
+
+#plotando o gráfico
+ggplot(data = drama_subgenres) +
+  geom_point(mapping = aes(x = subgenre, y = number_of_films, color = number_of_films), size = 9) +
+  scale_color_gradient(low = "white", high = "red") +
+  labs(title = "Most popular subgenres in Drama Movies",
+       xlab = "Subgenre",
+       ylab = "Number of films")
+```
+
+
+##Nada de clássicos!
+  E quando se trata dos anos de lançamentos, podemos ver uma tedência à melhores classificações para os filmes lançados nos ultimos 40 anos, principalmente quando se trata de filmes de ação. 
+
+```{r}
+action_movies <- imdb_top_movies %>% filter(genres_1 == "Action")
+drama_movies <- imdb_top_movies %>% filter(genres_1 == "Drama")
+
+#plotando o gráfico 
+ggplot()+
+  geom_point(data = action_movies, aes(x = year, y= rank, color="Action"), alpha = 0.5, size = 4)+
+  geom_point(data = drama_movies, aes(x= year, y=rank, color="Drama"), alpha= 0.5, size = 4)+
+  labs(title= "Occurrence os Action and Drama Films",
+  subtitle= "A Comparison between release year and IMDB rank",
+  x= "Release year",
+  y= "IMDB Ranking",
+  color= "Gênero")+
+  scale_color_manual(values= c("Action"= "red", "Drama" = "blue"))
+```
+
